@@ -1,7 +1,7 @@
 # About
 
 This project tracks development of the kamodo-pysat interface. While pysat focuses
-on providing a unified way of retrieving and loading and cleaning instrument data,
+on providing a unified way of retrieving, loading and cleaning instrument data,
 Kamodo provides a math-oriented API for interpolation, function composition, 
 and quick-look graphics. The combination of the two approaches simplifies 
 the workflow for science users, while minimizing the effort needed for science discovery.
