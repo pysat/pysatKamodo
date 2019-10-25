@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Home - Pysat-Kamodo Interface</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "pysatKamodo.ipynb";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Pysat-Kamodo Interface</a>
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Home</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#about">About</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#requirements">Requirements</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l2"><a href="#tutorial">Tutorial</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#instrument-initialization">Instrument Initialization</a></li>
+        
+            <li><a class="toctree-l3" href="#interpolation">Interpolation</a></li>
+        
+            <li><a class="toctree-l3" href="#visualization">Visualization</a></li>
+        
+            <li><a class="toctree-l3" href="#interactive-plotting">Interactive plotting</a></li>
+        
+            <li><a class="toctree-l3" href="#pyhc-standards">PyHC standards</a></li>
+        
+            <li><a class="toctree-l3" href="#pysat_kamodo-meta-attributes">Pysat_Kamodo meta attributes</a></li>
+        
+            <li><a class="toctree-l3" href="#pysat_kamodo-data-attributes">Pysat_Kamodo data attributes</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Pysat-Kamodo Interface</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="about">About<a class="headerlink" href="#about" title="Permanent link">&para;</a></h1>
+<p>This project tracks development of the kamodo-pysat interface. While pysat focuses
+on providing a unified way of retrieving and loading and cleaning instrument data,
+Kamodo provides a math-oriented API for interpolation, function composition, 
+and quick-look graphics. The combination of the two approaches simplifies 
+the workflow for science users, while minimizing the effort needed for science discovery.</p>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
+<p><code>pysat_kamodo</code> requires <code>pysat</code> and <code>kamodo</code>:</p>
+<pre><code class="console">pip install pysat
+pip install kamodo
+</code></pre>
+
+<p>The following are needed for writing publication-ready graphics:</p>
+<pre><code class="console">conda install -c plotly plotly-orca
+conda install psutil
+</code></pre>
+
+<p>To generate the documentation site:</p>
+<pre><code class="console">pip install mkdocs
+pip install mknotebooks
+pip install python-markdown-math
+pip install markdown-include
+
+mkdocs serve (from base directory)
+</code></pre>
+
+<h1 id="tutorial">Tutorial<a class="headerlink" href="#tutorial" title="Permanent link">&para;</a></h1>
+<pre><code class="python"># If you are running this notebook, call this cell first until we get this on pip
+import sys
+sys.path.append('..')
+</code></pre>
+
+<pre><code class="python">from pysat_kamodo import Pysat_Kamodo
+import pysat
+</code></pre>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>pysat will notify you if it needs to set up default directories for the initial import</p>
+</div>
+<h2 id="instrument-initialization">Instrument Initialization<a class="headerlink" href="#instrument-initialization" title="Permanent link">&para;</a></h2>
+<p>To initialize a pysat instrument, we require that a date be specified along with the usual pysat keyword arguments:</p>
+<pre><code class="python">import pandas as pd
+
+pki = Pysat_Kamodo(pd.datetime(2009,1,1), # required by Pysat_Kamodo
+                  platform = 'cnofs', # pysat keyword
+                  name='vefi', # pysat keyword
+                  tag='dc_b',# pysat keyword
+                  )
+pki
+</code></pre>
+
+<pre><code>Returning cnofs vefi dc_b data for 01 January 2009
+</code></pre>
+<p>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{B_{north}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{B_{up}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{B_{west}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{B_{IGRF north}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{B_{IGRF up}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{B_{IGRF west}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{latitude}{\left(t \right)} [degrees] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{longitude}{\left(t \right)} [degrees] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{altitude}{\left(t \right)} [km] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{dB_{zon}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{dB_{mer}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{dB_{par}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{year}{\left(t \right)} = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{dayofyear}{\left(t \right)} = \lambda{\left(t \right)}\end{equation}</script>
+<script type="math/tex; mode=display">\begin{equation}\operatorname{B_{flag}}{\left(t \right)} = \lambda{\left(t \right)}\end{equation}</script>
+</p>
+<p>The above Kamodo instance shows all available variables from the pysat <code>cnofs vefi</code> instrument together with units. The left-hand side of these equations represents the variables loaded by pysat. The right-hand side <script type="math/tex">\lambda(t)</script> expressions mean that there is some time interpolator defined for these variables that is not in closed form.</p>
+<h2 id="interpolation">Interpolation<a class="headerlink" href="#interpolation" title="Permanent link">&para;</a></h2>
+<p>These "Kamodofied" variables support automatic time interpolation. First let's specify a few arbitrary moments in time.</p>
+<pre><code class="python">t1 = pd.datetime(2009, 1, 1, 3, 39, 45)
+t2 = pd.datetime(2009, 1, 1, 3, 42, 33)
+t3 = pd.datetime(2009, 1, 1, 3, 51, 10)
+times = [t1, t2, t3]
+</code></pre>
+
+<p>To interpolate a given variable at these times, call the variable with those times:</p>
+<pre><code class="python">pki.B_up(times)
+</code></pre>
+
+<pre><code>2009-01-01 03:39:45    12086.362305
+2009-01-01 03:42:33    14458.384766
+2009-01-01 03:51:10    14879.630859
+Name: B_up, dtype: float32
+</code></pre>
+<p>Our Kamodo object uses the native instrument time as a default. This means we can easily retrieve the original raw data by not specifying a time:</p>
+<pre><code class="python"># head pandas method just shows the first 5 results
+pki.B_up().head()
+</code></pre>
+
+<pre><code>2009-01-01 00:00:00   -3984.774658
+2009-01-01 00:00:01   -3966.702637
+2009-01-01 00:00:02   -3951.631592
+2009-01-01 00:00:03   -3936.454102
+2009-01-01 00:00:04   -3921.183594
+Name: B_up, dtype: float32
+</code></pre>
+<h2 id="visualization">Visualization<a class="headerlink" href="#visualization" title="Permanent link">&para;</a></h2>
+<p>Kamodo uses plotly for visualization and easy web deployment. The default time allows Kamodo to determine an appropriate range for these quick-look graphics. </p>
+<pre><code class="python">import plotly.io as pio
+fig = pki.plot('B_up')
+pio.write_image(fig, 'figure1.svg')
+</code></pre>
+
+<p><img alt="fig1" src="../figure1.svg" /></p>
+<h2 id="interactive-plotting">Interactive plotting<a class="headerlink" href="#interactive-plotting" title="Permanent link">&para;</a></h2>
+<p>To plot interacvtively in the notebook use plotly's <code>iplot</code> and <code>plot</code> tools.</p>
+<pre><code class="python">from plotly.offline import init_notebook_mode, plot, iplot
+init_notebook_mode(connected = True)
+
+# renders in notebook cell
+iplot(fig)
+
+# saves to html and opens in new browser tab
+plot(fig)
+</code></pre>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Writing image to file requires plotly-orca (<code>conda install -c plotly plotly-orca</code>) and psutil (<code>pip install psutil</code>)</p>
+</div>
+<h2 id="pyhc-standards">PyHC standards<a class="headerlink" href="#pyhc-standards" title="Permanent link">&para;</a></h2>
+<p><code>Pysat_Kamodo</code> objects have <code>data</code> and <code>meta</code> attributes, in keeping with the Python-in-Heliophysics Community standards. These are not to be confused with pysat's <code>data</code> and <code>meta</code> attributes, which are stored in <code>Pysat_Kamodo._instrument.meta</code> and <code>Pysat_Kamodo._instrument.data</code>, respectively.</p>
+<h2 id="pysat_kamodo-meta-attributes">Pysat_Kamodo <code>meta</code> attributes<a class="headerlink" href="#pysat_kamodo-meta-attributes" title="Permanent link">&para;</a></h2>
+<p>The <code>meta</code> attribute illustrates Kamodo's minimalistic view of the world: under the hood, Kamodo uses the symbolic programing library <a href="https://docs.sympy.org/0.7.0/tutorial.html#introduction">Sympy</a>, so it only needs to keep track of symbols and units.</p>
+<pre><code class="python">pki.meta
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lhs</th>
+      <th>rhs</th>
+      <th>symbol</th>
+      <th>units</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>B_north(t)</th>
+      <td>B_north</td>
+      <td>None</td>
+      <td>B_north(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>B_up(t)</th>
+      <td>B_up</td>
+      <td>None</td>
+      <td>B_up(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>B_west(t)</th>
+      <td>B_west</td>
+      <td>None</td>
+      <td>B_west(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>B_IGRF_north(t)</th>
+      <td>B_IGRF_north</td>
+      <td>None</td>
+      <td>B_IGRF_north(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>B_IGRF_up(t)</th>
+      <td>B_IGRF_up</td>
+      <td>None</td>
+      <td>B_IGRF_up(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>B_IGRF_west(t)</th>
+      <td>B_IGRF_west</td>
+      <td>None</td>
+      <td>B_IGRF_west(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>latitude(t)</th>
+      <td>latitude</td>
+      <td>None</td>
+      <td>latitude(t)</td>
+      <td>degrees</td>
+    </tr>
+    <tr>
+      <th>longitude(t)</th>
+      <td>longitude</td>
+      <td>None</td>
+      <td>longitude(t)</td>
+      <td>degrees</td>
+    </tr>
+    <tr>
+      <th>altitude(t)</th>
+      <td>altitude</td>
+      <td>None</td>
+      <td>altitude(t)</td>
+      <td>km</td>
+    </tr>
+    <tr>
+      <th>dB_zon(t)</th>
+      <td>dB_zon</td>
+      <td>None</td>
+      <td>dB_zon(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>dB_mer(t)</th>
+      <td>dB_mer</td>
+      <td>None</td>
+      <td>dB_mer(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>dB_par(t)</th>
+      <td>dB_par</td>
+      <td>None</td>
+      <td>dB_par(t)</td>
+      <td>nT</td>
+    </tr>
+    <tr>
+      <th>year(t)</th>
+      <td>year</td>
+      <td>None</td>
+      <td>year(t)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>dayofyear(t)</th>
+      <td>dayofyear</td>
+      <td>None</td>
+      <td>dayofyear(t)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>B_flag(t)</th>
+      <td>B_flag</td>
+      <td>None</td>
+      <td>B_flag(t)</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>Kamodo also has some book-keeping metadata tied to indvidual variables:</p>
+<pre><code class="python">pki.B_flag.meta
+</code></pre>
+
+<pre><code>{'units': '',
+ 'citation': 'See cnofs vefi instrument docs',
+ 'equation': None,
+ 'hidden_args': []}
+</code></pre>
+<h2 id="pysat_kamodo-data-attributes">Pysat_Kamodo <code>data</code> attributes<a class="headerlink" href="#pysat_kamodo-data-attributes" title="Permanent link">&para;</a></h2>
+<p>The high-level data attribute simply wraps the underlying instrument's data attribute:</p>
+<pre><code class="python">pki.data.head()
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>B_north</th>
+      <th>B_up</th>
+      <th>B_west</th>
+      <th>B_IGRF_north</th>
+      <th>B_IGRF_up</th>
+      <th>B_IGRF_west</th>
+      <th>latitude</th>
+      <th>longitude</th>
+      <th>altitude</th>
+      <th>dB_zon</th>
+      <th>dB_mer</th>
+      <th>dB_par</th>
+      <th>year</th>
+      <th>dayofyear</th>
+      <th>B_flag</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2009-01-01 00:00:00</th>
+      <td>18440.412109</td>
+      <td>-3984.774658</td>
+      <td>2554.675781</td>
+      <td>18446.443359</td>
+      <td>-3986.936523</td>
+      <td>2547.343750</td>
+      <td>-4.569597</td>
+      <td>292.059448</td>
+      <td>781.560059</td>
+      <td>-8.088156</td>
+      <td>1.073114</td>
+      <td>-5.313991</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2009-01-01 00:00:01</th>
+      <td>18437.386719</td>
+      <td>-3966.702637</td>
+      <td>2567.197266</td>
+      <td>18443.085938</td>
+      <td>-3971.842773</td>
+      <td>2557.304688</td>
+      <td>-4.582252</td>
+      <td>292.113617</td>
+      <td>781.396973</td>
+      <td>-10.581589</td>
+      <td>4.132774</td>
+      <td>-5.264537</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2009-01-01 00:00:02</th>
+      <td>18433.964844</td>
+      <td>-3951.631592</td>
+      <td>2577.585449</td>
+      <td>18439.736328</td>
+      <td>-3956.730713</td>
+      <td>2567.252686</td>
+      <td>-4.594902</td>
+      <td>292.167725</td>
+      <td>781.233765</td>
+      <td>-11.029908</td>
+      <td>4.095586</td>
+      <td>-5.257792</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2009-01-01 00:00:03</th>
+      <td>18430.533203</td>
+      <td>-3936.454102</td>
+      <td>2587.725098</td>
+      <td>18436.376953</td>
+      <td>-3941.583984</td>
+      <td>2577.195312</td>
+      <td>-4.607548</td>
+      <td>292.221863</td>
+      <td>781.070312</td>
+      <td>-11.237411</td>
+      <td>4.121752</td>
+      <td>-5.298418</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2009-01-01 00:00:04</th>
+      <td>18427.074219</td>
+      <td>-3921.183594</td>
+      <td>2597.967773</td>
+      <td>18433.023438</td>
+      <td>-3926.407959</td>
+      <td>2587.145264</td>
+      <td>-4.620191</td>
+      <td>292.276031</td>
+      <td>780.906677</td>
+      <td>-11.544353</td>
+      <td>4.206348</td>
+      <td>-5.371078</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>Similar to meta, there is also a meta attribute associated with individual <code>Pysat_Kamodo</code> variables.</p>
+<pre><code class="python">pki.B_north.data.head()
+</code></pre>
+
+<pre><code>2009-01-01 00:00:00    18440.412109
+2009-01-01 00:00:01    18437.386719
+2009-01-01 00:00:02    18433.964844
+2009-01-01 00:00:03    18430.533203
+2009-01-01 00:00:04    18427.074219
+Name: B_north, dtype: float32
+</code></pre>
+<p>In this case, these are the same as the instrument data. However, Kamodo variables can come from any Kamodo-compatible function or data source, not just pysat data. See Kamodo's documentation on <a href="https://ccmc.gsfc.nasa.gov/Kamodo/notebooks/Kamodo/#kamodofication">Kamodofication</a> and the turorial on <a href="https://nbviewer.jupyter.org/github/asherp/Kamodo/blob/master/docs/notebooks/Kamodofying_Models.ipynb">Kamodofying Models</a> for examples.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+
+</body>
+</html>
