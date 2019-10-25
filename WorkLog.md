@@ -1,3 +1,5 @@
+# 2019-10-24 20:35:50.589940: clock-out
+* tried to deploy to github pages - getting issues with pysat org
 
 # 2019-10-24 20:35:21.141155: clock-in: T-15m
 
