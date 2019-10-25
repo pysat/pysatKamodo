@@ -1,0 +1,21 @@
+site_name: Pysat-Kamodo Interface
+
+nav:
+- Home: pysatKamodo.ipynb
+
+theme: readthedocs
+plugins:
+    - mknotebooks:
+        execute: true
+markdown_extensions:
+  - markdown_include.include:
+      base_path: docs
+  - admonition
+  - tables
+  - mdx_math:
+      enable_dollar_delimiter: True 
+  - toc:
+      permalink: true
+
+extra_javascript: 
+    - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
