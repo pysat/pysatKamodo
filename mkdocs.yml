@@ -1,7 +1,8 @@
 site_name: Pysat-Kamodo Interface
 
 nav:
-- Home: pysatKamodo.ipynb
+- About: README.md
+- Tutorial: pysatKamodo.ipynb
 
 theme: readthedocs
 plugins:
