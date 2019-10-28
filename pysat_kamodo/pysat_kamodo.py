@@ -1,8 +1,10 @@
 from kamodo.util import get_defaults
 from kamodo import kamodofy, Kamodo
 import inspect
+import importlib
 
 import pysat
+import pandas as pd
 
 def extract_inst_kwargs(kwargs):
     """extract instrument keywords""" 
@@ -12,6 +14,48 @@ def extract_inst_kwargs(kwargs):
         if k in kwargs:
             inst_kwargs[k] = kwargs.pop(k)
     return inst_kwargs
+
+
+def get_instrument_doc(inst_kwargs):
+    """Extracts instrument documentation from instrument module"""
+    instrument_doc = ''
+    
+    inst_module = inst_kwargs.get('inst_module')
+
+    if inst_module is not None:
+        return inst_module.__doc__
+    else:
+        name = inst_kwargs.get('name')
+        platform = inst_kwargs.get('platform')
+        if (name is None) & (platform is None):
+            raise ImportError('Need  platform and name for instrument')
+        elif (name == '') & (platform == ''):
+            return instrument_doc
+        
+        module_name = ''.join(('.', platform, '_', name))
+        try:
+            inst_module = importlib.import_module(module_name, 
+                                                  package='pysat.instruments')
+            print('loaded {}'.format(module_name))
+            return inst_module.__doc__
+        except:
+            try:
+                from pysat import user_modules
+                for mod in user_modules:
+                    try:
+                        inst_module = importlib.import_module(mod)
+                        if (inst_module.platform == platform) & (inst_module.name == name):
+                            return inst_module.__doc__
+                    except ImportError:
+                        pass
+            except ImportError:
+                raise NotImplementedError('''User-registered instruments
+                    not yet available in this version of pysat. 
+
+                    Please use inst_module keyword instead''')
+                pass
+            raise
+        return instrument_doc
 
 def time_interpolator(timekwarg):
     """{docstring}"""
@@ -52,10 +96,12 @@ class Pysat_Kamodo(Kamodo):
     def __init__(self, date, **kamodo_kwargs):
         
         inst_kwargs = extract_inst_kwargs(kamodo_kwargs)
+
+        self._citation = get_instrument_doc(inst_kwargs)
         
         self._instrument = pysat.Instrument(**inst_kwargs)
 
-        self.load_data(date)
+        self.load_data(pd.to_datetime(date))
         
         super(Pysat_Kamodo, self).__init__()
         
@@ -89,8 +135,7 @@ class Pysat_Kamodo(Kamodo):
             
             self[varname] = kamodofy(interpolator, 
                                      units = units,
-                                     citation = "See {} {} instrument docs".format(
-                                        self._instrument.platform, self._instrument.name))
+                                     citation = self._citation)
 
     @property
     def meta(self):
@@ -104,7 +149,8 @@ class Pysat_Kamodo(Kamodo):
         """Get data from underlying instrument object
 
         data is a python-in-heliophysics community standard"""
-        return self._instrument.data
+        # provide function-name: function data mapping
+        return {self[k].__name__: self[k].data for k in self}
     
     
 
