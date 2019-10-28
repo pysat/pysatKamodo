@@ -128,7 +128,7 @@ import pysat
 <p>To initialize a pysat instrument, we require that a date be specified along with the usual pysat keyword arguments:</p>
 <pre><code class="python">import pandas as pd
 
-pki = Pysat_Kamodo(pd.datetime(2009,1,1), # required by Pysat_Kamodo
+pki = Pysat_Kamodo('2009, 1, 1', # Pysat_Kamodo allows string dates
                   platform = 'cnofs', # pysat keyword
                   name='vefi', # pysat keyword
                   tag='dc_b',# pysat keyword
@@ -136,7 +136,8 @@ pki = Pysat_Kamodo(pd.datetime(2009,1,1), # required by Pysat_Kamodo
 pki
 </code></pre>
 
-<pre><code>Returning cnofs vefi dc_b data for 01 January 2009
+<pre><code>loaded .cnofs_vefi
+Returning cnofs vefi dc_b data for 01 January 2009
 </code></pre>
 <p>
 <script type="math/tex; mode=display">\begin{equation}\operatorname{B_{north}}{\left(t \right)} [nT] = \lambda{\left(t \right)}\end{equation}</script>
@@ -155,7 +156,83 @@ pki
 <script type="math/tex; mode=display">\begin{equation}\operatorname{dayofyear}{\left(t \right)} = \lambda{\left(t \right)}\end{equation}</script>
 <script type="math/tex; mode=display">\begin{equation}\operatorname{B_{flag}}{\left(t \right)} = \lambda{\left(t \right)}\end{equation}</script>
 </p>
-<p>The above Kamodo instance shows all available variables from the pysat <code>cnofs vefi</code> instrument together with units. The left-hand side of these equations represents the variables loaded by pysat. The right-hand side <script type="math/tex">\lambda(t)</script> expressions mean that there is some time interpolator defined for these variables that is not in closed form.</p>
+<p>The above Kamodo instance shows all available variables from the pysat <code>cnofs vefi</code> instrument together with units. The left-hand side of these equations represents the variables loaded by pysat. The right-hand side <script type="math/tex">\lambda(t)</script> expressions mean that there is some time interpolator defined for these variables that is not in closed form. More information for each variable, including the instrument's citation info, can be read from the variable docs:</p>
+<pre><code class="python">help(pki.B_flag)
+</code></pre>
+
+<pre><code>Help on function B_flag:
+
+B_flag(t=DatetimeIndex(['2009-01-01 00:00:00', '2009-01-01 00:00:01',
+               '2009-01-01 00:00:02', '2009-01-01 00:00:03',
+               '2009-01-01 00:00:04', '2009-01-01 00:00:05',
+               '2009-01-01 00:00:06', '2009-01-01 00:00:07',
+               '2009-01-01 00:00:08', '2009-01-01 00:00:09',
+               ...
+               '2009-01-01 23:59:49', '2009-01-01 23:59:50',
+               '2009-01-01 23:59:51', '2009-01-01 23:59:52',
+               '2009-01-01 23:59:53', '2009-01-01 23:59:54',
+               '2009-01-01 23:59:55', '2009-01-01 23:59:56',
+               '2009-01-01 23:59:57', '2009-01-01 23:59:58'],
+              dtype='datetime64[ns]', length=80594, freq=None))
+    B_flag time interpolator
+
+    parameters:
+    t: datetime series or list
+
+    returns: B_flag [] pandas series
+
+
+    citation: Supports the Vector Electric Field Instrument (VEFI)
+    onboard the Communication and Navigation Outage Forecasting
+    System (C/NOFS) satellite. Downloads data from the
+    NASA Coordinated Data Analysis Web (CDAWeb).
+
+    Description from CDAWeb:
+
+    The DC vector magnetometer on the CNOFS spacecraft is a three axis, fluxgate
+    sensor with active thermal control situated on a 0.6m boom.  This magnetometer
+    measures the Earth's magnetic field using 16 bit A/D converters at 1 sample per
+    sec with a range of .. 45,000 nT.  Its primary objective on the CNOFS
+    spacecraft is to enable an accurate V x B measurement along the spacecraft
+    trajectory.  In order to provide an in-flight calibration of the magnetic field
+    data, we compare the most recent POMME model (the POtsdam Magnetic Model of the
+    Earth, http://geomag.org/models/pomme5.html) with the actual magnetometer
+    measurements to help determine a set of calibration parameters for the gains,
+    offsets, and non-orthogonality matrix of the sensor axes.  The calibrated
+    magnetic field measurements are provided in the data file here. The VEFI
+    magnetic field data file currently contains the following variables:
+    B_north   Magnetic field in the north direction
+    B_up      Magnetic field in the up direction
+    B_west    Magnetic field in the west direction
+
+    The data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.
+
+    A brief discussion of the C/NOFS mission and instruments can be found at
+    de La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast
+    scintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,
+    doi:10.1016/j.jastp.2004.07.030.
+
+    Parameters
+    ----------
+    platform : string
+        'cnofs'
+    name : string
+        'vefi'
+    tag : string
+        Select measurement type, one of {'dc_b'}
+    sat_id : string
+        None supported
+
+    Note
+    ----
+    - tag = 'dc_b': 1 second DC magnetometer data
+
+    Warnings
+    --------
+    - The data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.
+    - Limited cleaning routine.
+    - Module not written by VEFI team.
+</code></pre>
 <h2 id="interpolation">Interpolation<a class="headerlink" href="#interpolation" title="Permanent link">&para;</a></h2>
 <p>These "Kamodofied" variables support automatic time interpolation. First let's specify a few arbitrary moments in time.</p>
 <pre><code class="python">t1 = pd.datetime(2009, 1, 1, 3, 39, 45)
@@ -164,7 +241,7 @@ t3 = pd.datetime(2009, 1, 1, 3, 51, 10)
 times = [t1, t2, t3]
 </code></pre>
 
-<p>To interpolate a given variable at these times, call the variable with those times:</p>
+<p>To interpolate a given variable at these times, simply call the variable like you would a function:</p>
 <pre><code class="python">pki.B_up(times)
 </code></pre>
 
@@ -173,7 +250,7 @@ times = [t1, t2, t3]
 2009-01-01 03:51:10    14879.630859
 Name: B_up, dtype: float32
 </code></pre>
-<p>Our Kamodo object uses the native instrument time as a default. This means we can easily retrieve the original raw data by not specifying a time:</p>
+<p>Our Kamodo object uses the native instrument time as a default parameter. This means we can easily retrieve the original raw data by not specifying a time:</p>
 <pre><code class="python"># head pandas method just shows the first 5 results
 pki.B_up().head()
 </code></pre>
@@ -355,146 +432,23 @@ plot(fig)
 </code></pre>
 
 <pre><code>{'units': '',
- 'citation': 'See cnofs vefi instrument docs',
+ 'citation': "Supports the Vector Electric Field Instrument (VEFI)\nonboard the Communication and Navigation Outage Forecasting\nSystem (C/NOFS) satellite. Downloads data from the\nNASA Coordinated Data Analysis Web (CDAWeb).\n\nDescription from CDAWeb:\n\nThe DC vector magnetometer on the CNOFS spacecraft is a three axis, fluxgate\nsensor with active thermal control situated on a 0.6m boom.  This magnetometer\nmeasures the Earth's magnetic field using 16 bit A/D converters at 1 sample per\nsec with a range of .. 45,000 nT.  Its primary objective on the CNOFS\nspacecraft is to enable an accurate V x B measurement along the spacecraft\ntrajectory.  In order to provide an in-flight calibration of the magnetic field\ndata, we compare the most recent POMME model (the POtsdam Magnetic Model of the\nEarth, http://geomag.org/models/pomme5.html) with the actual magnetometer\nmeasurements to help determine a set of calibration parameters for the gains,\noffsets, and non-orthogonality matrix of the sensor axes.  The calibrated\nmagnetic field measurements are provided in the data file here. The VEFI\nmagnetic field data file currently contains the following variables:\nB_north   Magnetic field in the north direction\nB_up      Magnetic field in the up direction\nB_west    Magnetic field in the west direction\n\nThe data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.\n\nA brief discussion of the C/NOFS mission and instruments can be found at\nde La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast\nscintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,\ndoi:10.1016/j.jastp.2004.07.030.\n\nParameters\n----------\nplatform : string\n    'cnofs'\nname : string\n    'vefi'\ntag : string\n    Select measurement type, one of {'dc_b'}\nsat_id : string\n    None supported\n\nNote\n----\n- tag = 'dc_b': 1 second DC magnetometer data\n\nWarnings\n--------\n- The data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.\n- Limited cleaning routine.\n- Module not written by VEFI team.\n\n",
  'equation': None,
  'hidden_args': []}
 </code></pre>
 <h2 id="pysat_kamodo-data-attributes">Pysat_Kamodo <code>data</code> attributes<a class="headerlink" href="#pysat_kamodo-data-attributes" title="Permanent link">&para;</a></h2>
-<p>The high-level data attribute simply wraps the underlying instrument's data attribute:</p>
-<pre><code class="python">pki.data.head()
+<p>The high-level data attribute provides a dictionary-access to the underlying instrument data. Custom function data is also available here.</p>
+<pre><code class="python">pki.data['B_north'].head()
 </code></pre>
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>B_north</th>
-      <th>B_up</th>
-      <th>B_west</th>
-      <th>B_IGRF_north</th>
-      <th>B_IGRF_up</th>
-      <th>B_IGRF_west</th>
-      <th>latitude</th>
-      <th>longitude</th>
-      <th>altitude</th>
-      <th>dB_zon</th>
-      <th>dB_mer</th>
-      <th>dB_par</th>
-      <th>year</th>
-      <th>dayofyear</th>
-      <th>B_flag</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2009-01-01 00:00:00</th>
-      <td>18440.412109</td>
-      <td>-3984.774658</td>
-      <td>2554.675781</td>
-      <td>18446.443359</td>
-      <td>-3986.936523</td>
-      <td>2547.343750</td>
-      <td>-4.569597</td>
-      <td>292.059448</td>
-      <td>781.560059</td>
-      <td>-8.088156</td>
-      <td>1.073114</td>
-      <td>-5.313991</td>
-      <td>2009</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2009-01-01 00:00:01</th>
-      <td>18437.386719</td>
-      <td>-3966.702637</td>
-      <td>2567.197266</td>
-      <td>18443.085938</td>
-      <td>-3971.842773</td>
-      <td>2557.304688</td>
-      <td>-4.582252</td>
-      <td>292.113617</td>
-      <td>781.396973</td>
-      <td>-10.581589</td>
-      <td>4.132774</td>
-      <td>-5.264537</td>
-      <td>2009</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2009-01-01 00:00:02</th>
-      <td>18433.964844</td>
-      <td>-3951.631592</td>
-      <td>2577.585449</td>
-      <td>18439.736328</td>
-      <td>-3956.730713</td>
-      <td>2567.252686</td>
-      <td>-4.594902</td>
-      <td>292.167725</td>
-      <td>781.233765</td>
-      <td>-11.029908</td>
-      <td>4.095586</td>
-      <td>-5.257792</td>
-      <td>2009</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2009-01-01 00:00:03</th>
-      <td>18430.533203</td>
-      <td>-3936.454102</td>
-      <td>2587.725098</td>
-      <td>18436.376953</td>
-      <td>-3941.583984</td>
-      <td>2577.195312</td>
-      <td>-4.607548</td>
-      <td>292.221863</td>
-      <td>781.070312</td>
-      <td>-11.237411</td>
-      <td>4.121752</td>
-      <td>-5.298418</td>
-      <td>2009</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2009-01-01 00:00:04</th>
-      <td>18427.074219</td>
-      <td>-3921.183594</td>
-      <td>2597.967773</td>
-      <td>18433.023438</td>
-      <td>-3926.407959</td>
-      <td>2587.145264</td>
-      <td>-4.620191</td>
-      <td>292.276031</td>
-      <td>780.906677</td>
-      <td>-11.544353</td>
-      <td>4.206348</td>
-      <td>-5.371078</td>
-      <td>2009</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<p>Similar to meta, there is also a meta attribute associated with individual <code>Pysat_Kamodo</code> variables.</p>
+<pre><code>2009-01-01 00:00:00    18440.412109
+2009-01-01 00:00:01    18437.386719
+2009-01-01 00:00:02    18433.964844
+2009-01-01 00:00:03    18430.533203
+2009-01-01 00:00:04    18427.074219
+Name: B_north, dtype: float32
+</code></pre>
+<p>The instrument data is also available at the variable level:</p>
 <pre><code class="python">pki.B_north.data.head()
 </code></pre>
 
