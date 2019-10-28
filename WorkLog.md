@@ -1,4 +1,6 @@
 # 2019-10-28 17:53:09.514433: clock-out
+* Adding instrument citations
+* Made data a dictionary so it can provide access to user-defined variables and not just pysat data.
 
 # 2019-10-28 16:18:06.257850: clock-in
 
