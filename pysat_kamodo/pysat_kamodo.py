@@ -138,14 +138,14 @@ class Pysat_Kamodo(Kamodo):
                                      citation = self._citation)
 
     @property
-    def meta(self):
+    def _meta(self):
         """metadata of the Pysat_Kamodo interface
 
         meta is a python-in-heliophysics community standard"""
         return self.detail()
 
     @property
-    def data(self):
+    def _data(self):
         """Get data from underlying instrument object
 
         data is a python-in-heliophysics community standard"""
