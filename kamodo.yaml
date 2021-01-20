@@ -1,0 +1,13 @@
+
+config_override: kamodo.yaml
+models:
+  cnofs:
+    class: pysat_kamodo.Pysat_Kamodo
+    params:
+      date: 2009, 1, 1
+      name: vefi
+      platform: cnofs
+      tag: dc_b
+    plot:
+      B_up: null
+      B_west: null
