@@ -1,4 +1,8 @@
+
+# 2021-02-02 09:37:48.235392: clock-in
+
 * added kamodo-serve startup command
+
 # 2019-10-28 17:53:09.514433: clock-out
 * Adding instrument citations
 * Made data a dictionary so it can provide access to user-defined variables and not just pysat data.
