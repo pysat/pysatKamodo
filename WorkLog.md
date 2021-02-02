@@ -1,3 +1,5 @@
+# 2021-02-02 15:27:46.576910: clock-out
+
 * added default_stride keyword for faster loading
 
 # 2021-02-02 15:26:57.610074: clock-in
