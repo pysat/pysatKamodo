@@ -1,3 +1,6 @@
+
+# 2021-02-02 15:26:57.610074: clock-in
+
 * pushed ploty version
 # 2021-02-02 12:30:20.490198: clock-out
 
