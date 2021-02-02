@@ -8,6 +8,7 @@ models:
       name: vefi
       platform: cnofs
       tag: dc_b
+      default_stride: 20
     plot:
       B_up: null
       B_west: null

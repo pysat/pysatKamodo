@@ -93,49 +93,52 @@ def get_interpolator(func, varname, df, default_time, docstring):
     return loc[varname]
 
 class Pysat_Kamodo(Kamodo):
-    def __init__(self, date, **kamodo_kwargs):
-        
+    def __init__(self, date, default_stride=10, **kamodo_kwargs):
         inst_kwargs = extract_inst_kwargs(kamodo_kwargs)
 
         self._citation = get_instrument_doc(inst_kwargs)
-        
+
         self._instrument = pysat.Instrument(**inst_kwargs)
+        self._default_stride = default_stride
 
         self.load_data(pd.to_datetime(date))
-        
+
         super(Pysat_Kamodo, self).__init__()
-        
+
         self.register_variables()
-        
+
         for varname, interpolator in kamodo_kwargs.items():
             self[varname] = interpolator
-    
+
     def load_data(self, date):
         """Attempt to load data if available, else download"""
         self._instrument.load(date = date)
         if self._instrument.data.empty:
             self._instrument.download(start = date, stop = date)
             self._instrument.load(date = date)
-        
+
     def register_variables(self):
         """register variables as kamodo functions"""
-        
+
         for varname in self._instrument.data.columns:
             units = self._instrument.meta[varname].units
             if type(units) is not str:
                 units = ''
 
-            docstring = time_interpolator_docstring.format(varname = varname, units = units)
-            interpolator = get_interpolator(time_interpolator, 
-                                            varname,
-                                            self._instrument.data[varname],
-                                            self._instrument.data.index,
-                                            docstring)
+            docstring = time_interpolator_docstring.format(
+                varname=varname, units=units)
+            interpolator = get_interpolator(
+                time_interpolator,
+                varname,
+                self._instrument.data[varname],
+                self._instrument.data.index[::self._default_stride],
+                docstring)
 
-            
-            self[varname] = kamodofy(interpolator, 
-                                     units = units,
-                                     citation = self._citation)
+
+            self[varname] = kamodofy(
+                interpolator,
+                units=units,
+                citation=self._citation)
 
     @property
     def _meta(self):
