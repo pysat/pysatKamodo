@@ -1,3 +1,4 @@
+* added docstring to class
 * updating dockerfile
 # 2021-02-02 15:27:46.576910: clock-out
 

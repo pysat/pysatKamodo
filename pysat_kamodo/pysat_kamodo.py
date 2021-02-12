@@ -97,6 +97,7 @@ class Pysat_Kamodo(Kamodo):
         inst_kwargs = extract_inst_kwargs(kamodo_kwargs)
 
         self._citation = get_instrument_doc(inst_kwargs)
+        self.__doc__ = self._citation
 
         self._instrument = pysat.Instrument(**inst_kwargs)
         self._default_stride = default_stride
