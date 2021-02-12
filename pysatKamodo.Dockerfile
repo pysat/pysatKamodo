@@ -4,17 +4,17 @@ FROM apembroke/pysat:latest
 RUN git clone https://github.com/asherp/Kamodo.git
 RUN pip install -e Kamodo
 
-RUN git clone https://github.com/pysat/pysatKamodo.git
-RUN pip install -e pysatKamodo
-
 # Keep plotly at lower api
 RUN pip install plotly==4.7.1
+
+COPY . /pysatKamodo
+RUN pip install -e pysatKamodo
 
 # RUN conda install jupyter
 
 # CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
 
-WORKDIR pysatKamodo
+WORKDIR /pysatKamodo
 
 CMD ["kamodo-serve"]
 

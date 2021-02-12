@@ -12,3 +12,4 @@ models:
     plot:
       B_up: null
       B_west: null
+user_model: ${models.cnofs}
