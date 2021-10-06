@@ -1,3 +1,6 @@
+
+# 2021-10-06 15:39:27.430880: clock-in
+
 # 2021-10-06 12:55:45.912345: clock-out
 
 * upgrading to latest pysat
