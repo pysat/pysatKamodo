@@ -1,3 +1,5 @@
+# 2021-10-06 17:18:30.261475: clock-out
+
 * got test instrument to load
 * following Madrigal example https://pysat.readthedocs.io/en/latest/tutorial/tutorial_basics.html#instrument-discovery
 * pysat ecosystem https://pysat.readthedocs.io/en/latest/ecosystem.html#ecosystem
