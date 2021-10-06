@@ -1,3 +1,6 @@
+
+# 2021-10-06 12:18:16.974715: clock-in
+
 * added docstring to class
 * updating dockerfile
 # 2021-02-02 15:27:46.576910: clock-out
