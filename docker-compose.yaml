@@ -4,13 +4,23 @@ services:
   pysat:
     image: pysat
     ports:
-      - "8888:8888"
+      - "8880:8888"
     build: 
       context: .
       dockerfile: pysat.Dockerfile
-
   pysat-kamodo:
     image: pysat_kamodo
+    ports:
+      - "8881:8888"
     build:
       context: .
-      dockerfile: pysatKamodo.Dockerfile
+      dockerfile: dockerfiles/pysatKamodo.Dockerfile
+    volumes:
+      - type: bind
+        source: ${PWD}
+        target: /pysatKamodo
+  pysat-madrigal:
+    image: pysat_madrigal
+    build:
+      context: .
+      dockerfile: dockerfiles/pysatMadrigal.Dockerfile

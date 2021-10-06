@@ -1,3 +1,6 @@
+* got test instrument to load
+* following Madrigal example https://pysat.readthedocs.io/en/latest/tutorial/tutorial_basics.html#instrument-discovery
+* pysat ecosystem https://pysat.readthedocs.io/en/latest/ecosystem.html#ecosystem
 
 # 2021-10-06 15:39:27.430880: clock-in
 

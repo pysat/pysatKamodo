@@ -76,6 +76,7 @@ t: datetime series or list
 returns: {varname} [{units}] pandas series
 """
 
+# +
 def get_interpolator(func, varname, df, default_time, docstring):
     """Creates time interpolator with custom signature"""
     #extract source code from time_interpolator
@@ -92,14 +93,16 @@ def get_interpolator(func, varname, df, default_time, docstring):
     exec(new_src, loc)
     return loc[varname]
 
+
+# -
+
 class Pysat_Kamodo(Kamodo):
     def __init__(self, date, default_stride=10, **kamodo_kwargs):
         inst_kwargs = extract_inst_kwargs(kamodo_kwargs)
 
-        self._citation = get_instrument_doc(inst_kwargs)
-        self.__doc__ = self._citation
-
         self._instrument = pysat.Instrument(**inst_kwargs)
+        self._citation = self._instrument
+        self.__doc__ = self._instrument.__doc__
         self._default_stride = default_stride
 
         self.load_data(pd.to_datetime(date))
@@ -125,6 +128,8 @@ class Pysat_Kamodo(Kamodo):
             units = self._instrument.meta[varname].units
             if type(units) is not str:
                 units = ''
+            elif units == 'none':
+                units = ''
 
             docstring = time_interpolator_docstring.format(
                 varname=varname, units=units)
@@ -135,11 +140,14 @@ class Pysat_Kamodo(Kamodo):
                 self._instrument.data.index[::self._default_stride],
                 docstring)
 
-
-            self[varname] = kamodofy(
-                interpolator,
-                units=units,
-                citation=self._citation)
+            try:
+                self[varname] = kamodofy(
+                    interpolator,
+                    units=units,
+                    citation=self._citation)
+            except:
+                print('cannot register {} with {} {}'.format(varname, units, type(units)))
+                raise
 
     @property
     def _meta(self):
@@ -155,11 +163,3 @@ class Pysat_Kamodo(Kamodo):
         data is a python-in-heliophysics community standard"""
         # provide function-name: function data mapping
         return {self[k].__name__: self[k].data for k in self}
-    
-    
-
-
-
-
-
-

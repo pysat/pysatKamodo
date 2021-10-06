@@ -15,6 +15,37 @@ pip install pysat-kamodo
 ## Usage
 
 ```python
+from pysat_kamodo.pysat_kamodo import Pysat_Kamodo
+```
+
+```python
+kinst = Pysat_Kamodo('2009, 1, 1', # date required
+    platform = 'pysat', # pysat keyword
+    name='testing', # pysat keyword
+    )
+```
+
+```python
+# in a jupyter notebook cell, the object renders as a set of 1-d functions
+kinst
+```
+
+Any of the above functions may be called by passing values for time
+
+```python
+import pandas as pd
+kinst.dummy1([pd.to_datetime('2009-01-01 15:16:45')])
+```
+
+As a subclass of Kamodo, the kinst object automatically plots via function inspection
+
+```python
+kinst.plot('dummy1')
+```
+
+The code below requires installation of the cnofs instrument.
+
+```python
 pki = Pysat_Kamodo('2009, 1, 1', # Pysat_Kamodo allows string dates
                   platform = 'cnofs', # pysat keyword
                   name='vefi', # pysat keyword
