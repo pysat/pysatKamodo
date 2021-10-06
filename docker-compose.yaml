@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  pysat:
+    image: pysat
+    ports:
+      - "8888:8888"
+    build: 
+      context: .
+      dockerfile: pysat.Dockerfile
+
+  pysat-kamodo:
+    image: pysat_kamodo
+    build:
+      context: .
+      dockerfile: pysatKamodo.Dockerfile

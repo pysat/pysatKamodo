@@ -1,8 +1,16 @@
+* upgrading to latest pysat
+* unable to rebuild pysat
+```sh
+#6 8.711 PackagesNotFoundError: The following packages are not available from current channels:
+#6 8.711 
+#6 8.711   - python==3.7
+```
 
 # 2021-10-06 12:18:16.974715: clock-in
 
 * added docstring to class
 * updating dockerfile
+
 # 2021-02-02 15:27:46.576910: clock-out
 
 * added default_stride keyword for faster loading

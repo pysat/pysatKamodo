@@ -1,8 +1,8 @@
-FROM apembroke/pysat:latest
+FROM pysat
 
 
-RUN git clone https://github.com/asherp/Kamodo.git
-RUN pip install -e Kamodo
+RUN git clone https://github.com/EnsembleGovServices/kamodo-core.git
+RUN pip install -e kamodo-core
 
 # Keep plotly at lower api
 RUN pip install plotly==4.7.1
