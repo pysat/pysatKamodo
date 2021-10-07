@@ -1,3 +1,5 @@
+# 2021-10-07 12:54:50.852631: clock-out
+
 * got madrigal working
 
 # 2021-10-07 10:52:13.769467: clock-in
