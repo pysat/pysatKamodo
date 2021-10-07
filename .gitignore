@@ -123,3 +123,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# hourly
+*hourly-outputs
+
+# outputs
+*kamodo_output/

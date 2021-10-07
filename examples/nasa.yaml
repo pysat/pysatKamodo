@@ -1,0 +1,20 @@
+config_override: nasa.yaml
+gui:
+  external_stylesheets: []
+  routes_pathname_prefix: /kamodo/
+kamodo_output: kamodo_output
+models:
+  vefi:
+    class: pysat_kamodo.nasa.Pysat_Kamodo
+    evaluate: {}
+    fig_layout:
+      autosize: true
+    params:
+      date: 2009, 1, 1
+      platform: cnofs
+      name: vefi
+      tag: dc_b
+      default_stride: 1
+    plot:
+      B_up:
+      B_west:

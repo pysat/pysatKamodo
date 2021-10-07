@@ -30,3 +30,22 @@ services:
       - type: bind
         source: ${PWD}
         target: /pysatKamodo
+      - type: bind
+        source: ${HOME}/.pysatData
+        target: /pysatData
+  pysat-nasa:
+    image: pysat_nasa
+    build:
+      context: .
+      dockerfile: dockerfiles/pysatNASA.Dockerfile
+    ports:
+      - "8883:8888"
+    volumes:
+      - type: bind
+        source: ${PWD}
+        target: /pysatKamodo
+      - type: bind
+        source: ${HOME}/.pysatData
+        target: /pysatData
+
+

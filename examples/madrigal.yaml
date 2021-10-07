@@ -1,0 +1,30 @@
+config_override: madrigal.yaml
+gui:
+  external_stylesheets: []
+  routes_pathname_prefix: /kamodo/
+kamodo_output: kamodo_output
+models:
+  dmsp:
+    class: pysat_kamodo.madrigal.Madrigal_Kamodo
+    evaluate: {}
+    fig_layout:
+      autosize: true
+    params:
+      date: 2001, 1, 1
+      user: firstname+lastname
+      password: email@address.com
+      platform: dmsp
+      name: ivm
+      tag: utd
+      inst_id: f12
+      regname_map:
+        ni: n_i
+        ti: t_i
+      regname_replacements:
+        +: _plus
+        -: _minus
+      default_stride: 1
+      skip_variables: ['year', 'month', 'day', 'hour', 'min']
+    plot:
+      t_i:
+      n_i:

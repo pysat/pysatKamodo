@@ -97,14 +97,23 @@ def get_interpolator(func, varname, df, default_time, docstring):
 # -
 
 class Pysat_Kamodo(Kamodo):
-    def __init__(self, date, default_stride=10, regnames = {}, verbose=False, **kamodo_kwargs):
+    def __init__(self,
+                 date,
+                 default_stride=10,
+                 regname_map = {},
+                 regname_replacements = {},
+                 skip_variables = [],
+                 verbose=False,
+                 **kamodo_kwargs):
         inst_kwargs = extract_inst_kwargs(kamodo_kwargs)
 
         self._instrument = pysat.Instrument(**inst_kwargs)
         self._citation = self._instrument.references
         self.__doc__ = self._instrument.__doc__
         self._default_stride = default_stride
-        self._regnames = regnames
+        self._regname_map = regname_map
+        self._regname_replacements = regname_replacements
+        self._skip_variables = skip_variables
         self.verbose = verbose
 
         self.load_data(pd.to_datetime(date))
@@ -125,7 +134,8 @@ class Pysat_Kamodo(Kamodo):
 
     def get_regname(self, varname):
         """replace input variable name with regnames"""
-        for k, v in self._regnames.items():
+        varname = self._regname_map.get(varname, varname)
+        for k, v in self._regname_replacements.items():
             varname = varname.replace(k,v)
         return varname
     
@@ -133,6 +143,8 @@ class Pysat_Kamodo(Kamodo):
         """register variables as kamodo functions"""
 
         for varname in self._instrument.data.columns:
+            if varname in self._skip_variables:
+                continue
             regname = self.get_regname(varname)
             if self.verbose:
                 print('registering {} as {}'.format(varname, regname))
@@ -141,6 +153,8 @@ class Pysat_Kamodo(Kamodo):
                 units = ''
             elif units.lower() in ['none', 'n/a']:
                 units = ''
+            if ('-' in units) and ('**' not in units):
+                units = units.replace('-','**-')
 
             docstring = time_interpolator_docstring.format(
                 varname=varname, units=units)
@@ -157,8 +171,8 @@ class Pysat_Kamodo(Kamodo):
                     units=units,
                     citation=self._citation)
             except:
-                print('cannot register {} with {} {}'.format(varname, units, type(units)))
-                pass
+                if self.verbose:
+                    print('cannot register {} with {} {}'.format(regname, units, type(units)))
 
     @property
     def _meta(self):
