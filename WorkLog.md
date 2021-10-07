@@ -1,3 +1,6 @@
+
+# 2021-10-07 10:52:13.769467: clock-in
+
 # 2021-10-06 17:18:30.261475: clock-out
 
 * got test instrument to load
