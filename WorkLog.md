@@ -1,3 +1,4 @@
+* got madrigal working
 
 # 2021-10-07 10:52:13.769467: clock-in
 

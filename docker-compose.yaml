@@ -21,6 +21,12 @@ services:
         target: /pysatKamodo
   pysat-madrigal:
     image: pysat_madrigal
+    ports:
+      - "8882:8888"
     build:
       context: .
       dockerfile: dockerfiles/pysatMadrigal.Dockerfile
+    volumes:
+      - type: bind
+        source: ${PWD}
+        target: /pysatKamodo

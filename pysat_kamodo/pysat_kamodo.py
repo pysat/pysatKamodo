@@ -85,7 +85,7 @@ def get_interpolator(func, varname, df, default_time, docstring):
     #create variable-dependent signature
     new_src = (src \
            .format(docstring = docstring)
-           .replace('timekwarg',"t = default_time")
+           .replace('timekwarg', "t = default_time")
            .replace('time_interpolator', varname))
 
 #     default_time = self._instrument.data.index
@@ -97,17 +97,19 @@ def get_interpolator(func, varname, df, default_time, docstring):
 # -
 
 class Pysat_Kamodo(Kamodo):
-    def __init__(self, date, default_stride=10, **kamodo_kwargs):
+    def __init__(self, date, default_stride=10, regnames = {}, verbose=False, **kamodo_kwargs):
         inst_kwargs = extract_inst_kwargs(kamodo_kwargs)
 
         self._instrument = pysat.Instrument(**inst_kwargs)
-        self._citation = self._instrument
+        self._citation = self._instrument.references
         self.__doc__ = self._instrument.__doc__
         self._default_stride = default_stride
+        self._regnames = regnames
+        self.verbose = verbose
 
         self.load_data(pd.to_datetime(date))
 
-        super(Pysat_Kamodo, self).__init__()
+        super(Pysat_Kamodo, self).__init__(verbose=verbose)
 
         self.register_variables()
 
@@ -121,33 +123,42 @@ class Pysat_Kamodo(Kamodo):
             self._instrument.download(start = date, stop = date)
             self._instrument.load(date = date)
 
+    def get_regname(self, varname):
+        """replace input variable name with regnames"""
+        for k, v in self._regnames.items():
+            varname = varname.replace(k,v)
+        return varname
+    
     def register_variables(self):
         """register variables as kamodo functions"""
 
         for varname in self._instrument.data.columns:
+            regname = self.get_regname(varname)
+            if self.verbose:
+                print('registering {} as {}'.format(varname, regname))
             units = self._instrument.meta[varname].units
             if type(units) is not str:
                 units = ''
-            elif units == 'none':
+            elif units.lower() in ['none', 'n/a']:
                 units = ''
 
             docstring = time_interpolator_docstring.format(
                 varname=varname, units=units)
             interpolator = get_interpolator(
                 time_interpolator,
-                varname,
+                regname,
                 self._instrument.data[varname],
                 self._instrument.data.index[::self._default_stride],
                 docstring)
 
             try:
-                self[varname] = kamodofy(
+                self[regname] = kamodofy(
                     interpolator,
                     units=units,
                     citation=self._citation)
             except:
                 print('cannot register {} with {} {}'.format(varname, units, type(units)))
-                raise
+                pass
 
     @property
     def _meta(self):
