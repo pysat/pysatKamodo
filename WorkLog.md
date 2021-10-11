@@ -1,3 +1,4 @@
+* switching to png for online embedding
 * pushing cnofs fig
 
 # 2021-10-07 18:29:37.087845: clock-out
