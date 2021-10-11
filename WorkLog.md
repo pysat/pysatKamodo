@@ -1,3 +1,4 @@
+* high res png
 * switching to png for online embedding
 * pushing cnofs fig
 
