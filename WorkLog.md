@@ -1,3 +1,5 @@
+* pushing cnofs fig
+
 # 2021-10-07 18:29:37.087845: clock-out
 
 * added pysat-nasa example
